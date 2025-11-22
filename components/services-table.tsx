@@ -18,8 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react"
 
 interface Service {
   id: number
@@ -114,166 +114,182 @@ export function ServicesTable() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-semibold">Services</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Services</h2>
         <p className="text-sm text-muted-foreground">
           Overview of your active services, their status and monthly billing.
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4">
-        <Input
-          placeholder="Q Search services..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-xs"
-        />
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            {uniqueTypes.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            {uniqueStatuses.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Input
-          placeholder="ID"
-          value={idFilter}
-          onChange={(e) => setIdFilter(e.target.value)}
-          className="w-[120px]"
-        />
-        <Button variant="outline" onClick={clearFilters}>
-          Clear
-        </Button>
-      </div>
-
-      {/* Table */}
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>UUID</TableHead>
-              <TableHead>Exp. Date</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Monthly pricing</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedServices.map((service) => (
-              <TableRow key={service.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
-                    {service.id}
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">{service.name}</TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{service.type}</Badge>
-                </TableCell>
-                <TableCell className="font-mono text-xs">{service.uuid}</TableCell>
-                <TableCell>{service.expDate}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{service.status}</Badge>
-                </TableCell>
-                <TableCell>{service.monthlyPricing}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" size="sm">
-                      Renew
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Manage
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          Page {currentPage} of {totalPages || 1}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Rows per page</span>
-          <Select
-            value={rowsPerPage.toString()}
-            onValueChange={(value) => {
-              setRowsPerPage(Number(value))
-              setCurrentPage(1)
-            }}
-          >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-            >
-              <ChevronsLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-              disabled={currentPage === totalPages || totalPages === 0}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages || totalPages === 0}
-            >
-              <ChevronsRight className="h-4 w-4" />
-            </Button>
+      {/* Services Card */}
+      <Card className="border-border bg-card">
+        <CardContent className="p-6">
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="relative max-w-xs flex-1 min-w-[200px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Q Search services..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                {uniqueTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                {uniqueStatuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="ID"
+              value={idFilter}
+              onChange={(e) => setIdFilter(e.target.value)}
+              className="w-[120px]"
+            />
+            <div className="ml-auto">
+              <Button variant="outline" onClick={clearFilters}>
+                Clear
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
+
+          {/* Table */}
+          <div className="rounded-md border border-border">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="font-medium text-foreground">ID</TableHead>
+                  <TableHead className="font-medium text-foreground">Name</TableHead>
+                  <TableHead className="font-medium text-foreground">Type</TableHead>
+                  <TableHead className="font-medium text-foreground">UUID</TableHead>
+                  <TableHead className="font-medium text-foreground">Exp. Date</TableHead>
+                  <TableHead className="font-medium text-foreground">Status</TableHead>
+                  <TableHead className="font-medium text-foreground">Monthly pricing</TableHead>
+                  <TableHead className="text-right font-medium text-foreground">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedServices.map((service) => (
+                  <TableRow key={service.id} className="border-border">
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-[#4CAF50]" />
+                        <span className="text-foreground">{service.id}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium text-foreground">{service.name}</TableCell>
+                    <TableCell>
+                      <Button variant="secondary" size="sm" className="h-7 text-xs text-foreground">
+                        {service.type}
+                      </Button>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{service.uuid}</TableCell>
+                    <TableCell className="text-foreground">{service.expDate}</TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm" className="h-7 text-xs text-foreground">
+                        {service.status}
+                      </Button>
+                    </TableCell>
+                    <TableCell className="text-foreground">{service.monthlyPricing}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="outline" size="sm" className="h-8 text-foreground">
+                          Renew
+                        </Button>
+                        <Button variant="outline" size="sm" className="h-8 text-foreground">
+                          Manage
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between mt-6 pt-6 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages || 1}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Rows per page</span>
+              <Select
+                value={rowsPerPage.toString()}
+                onValueChange={(value) => {
+                  setRowsPerPage(Number(value))
+                  setCurrentPage(1)
+                }}
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="disabled:opacity-50"
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="disabled:opacity-50"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

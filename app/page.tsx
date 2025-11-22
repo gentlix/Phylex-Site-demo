@@ -5,11 +5,11 @@ import { ServicesTable } from "@/components/services-table"
 
 export default function Home() {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden bg-background">
         <TopNav />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 bg-background">
           <div className="space-y-6">
             <DashboardWidgets />
             <ServicesTable />
