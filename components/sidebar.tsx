@@ -1,14 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   Eye, 
   ShoppingCart, 
   FileText, 
   List, 
   Ticket,
-  MoreVertical
+  MoreVertical,
+  User
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -21,6 +22,7 @@ import {
 const navigation = [
   { name: "Overview", href: "/", icon: Eye },
   { name: "Order new service", href: "/order", icon: ShoppingCart },
+  { name: "Account", href: "/account", icon: User },
 ]
 
 const finances = [
@@ -35,6 +37,7 @@ const help = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <div className="flex h-screen w-64 flex-col border-r border-border bg-card">
@@ -151,8 +154,9 @@ export function Sidebar() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/account")}>
+                Account Settings
+              </DropdownMenuItem>
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
